@@ -1,0 +1,78 @@
+#!/usr/bin/perl
+# -*- cperl -*-
+#
+# Add
+# $dbname = $ENV{"PGDATABASE"}           if ($ENV{"PGDATABASE"});
+# in /usr/share/perl5/Munin/Plugin/Pgsql.pm __connect function
+# in order choose the database
+# Copyright (C) 2009 Magnus Hagander, Redpill Linpro AB
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; version 2 dated June,
+# 1991.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301 USA.
+
+=head1 NAME
+
+darwin_users - Plugin to monitor connected Darwin users.
+
+=head1 CONFIGURATION
+
+Configuration is done through libpq environment variables, for example
+PGUSER, PGDATABASE, etc. For more information, see L<Munin::Plugin::Pgsql>.
+
+=head1 SEE ALSO
+
+L<Munin::Plugin::Pgsql>
+
+=head1 MAGIC MARKERS
+
+ #%# family=auto
+ #%# capabilities=autoconf
+
+=head1 AUTHOR
+
+Magnus Hagander <magnus@hagander.net>, Redpill Linpro AB
+Brice Maron <bmaron@naturalsciences.be>
+
+=head1 COPYRIGHT/License.
+
+Copyright (c) 2009 Magnus Hagander, Redpill Linpro AB
+
+All rights reserved. This program is free software; you can
+redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation; version 2
+dated June, 1991.
+
+=cut
+
+use strict;
+use warnings;
+
+use Munin::Plugin::Pgsql;
+
+my $pg = Munin::Plugin::Pgsql->new(
+    title  => 'Connected Users',
+    info   => 'Number of connected user',
+    vlabel => 'Connections',
+    category => 'Darwin2',
+    defaultdb => 'darwin2',
+    basequery =>
+      "SELECT count(*) nbr_user FROM darwin2.users WHERE last_seen >= now()-'30 minutes'::interval",
+   configquery => "VALUES
+           ('nbr_user','Number Of connected users', 'Number Of connected users in last 30 minutes')",
+    pivotquery  => 1,
+);
+
+$pg->Process();
+

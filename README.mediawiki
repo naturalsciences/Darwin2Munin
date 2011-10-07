@@ -1,0 +1,55 @@
+= DW2 For Munin =
+
+DaRWIN also stands for Data Research Warehouse Information Network.
+This tool is used to manage your natural sciences collections
+
+This repository contains some munin-node plugins to monitor
+your darwin2 installation.
+
+See  the main project page at 
+[http://projects.naturalsciences.be/projects/darwin]
+or
+[https://github.com/naturalsciences/Darwin]
+
+
+== Configuration ==
+
+Link these files in your munin-node "plugins/" directory
+of the DB server and add this configuration to your
+munin-node config file.
+
+[darwin_*]
+  user postgres
+  env.PGDATABASE darwin2
+
+
+You also need to "patch" a file from your std munin installation
+to allow darwin plugins.
+
+See the ticket on the munin trac:
+
+http://munin-monitoring.org/ticket/1103
+
+=== Patch ===
+
+In the Pgsql.pm file, ( /usr/share/perl5/Munin/Plugin/Pgsql.pm on debian stable)
+
+Before
+<pre>
+  graphtype => 'GAUGE'
+</pre>
+Add
+<pre>
+  category  => 'PostgreSQL',
+</pre>
+
+then replace
+<pre>
+  print "graph_category PostgreSQL\n"
+</pre>
+by
+<pre>
+  print "graph_category $self->{category}\n";
+</pre>
+
+

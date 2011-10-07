@@ -1,0 +1,86 @@
+#!/usr/bin/perl
+# -*- cperl -*-
+#
+# Add
+# $dbname = $ENV{"PGDATABASE"}           if ($ENV{"PGDATABASE"});
+# in /usr/share/perl5/Munin/Plugin/Pgsql.pm __connect function
+# in order choose the database
+# Copyright (C) 2009 Magnus Hagander, Redpill Linpro AB
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; version 2 dated June,
+# 1991.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301 USA.
+
+=head1 NAME
+
+darwin_users - Plugin to monitor connected Darwin users.
+
+=head1 CONFIGURATION
+
+Configuration is done through libpq environment variables, for example
+PGUSER, PGDATABASE, etc. For more information, see L<Munin::Plugin::Pgsql>.
+
+=head1 SEE ALSO
+
+L<Munin::Plugin::Pgsql>
+
+=head1 MAGIC MARKERS
+
+ #%# family=auto
+ #%# capabilities=autoconf
+
+=head1 AUTHOR
+
+Magnus Hagander <magnus@hagander.net>, Redpill Linpro AB
+Brice Maron <bmaron@naturalsciences.be>
+
+=head1 COPYRIGHT/License.
+
+Copyright (c) 2009 Magnus Hagander, Redpill Linpro AB
+
+All rights reserved. This program is free software; you can
+redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation; version 2
+dated June, 1991.
+
+=cut
+
+use strict;
+use warnings;
+
+use Munin::Plugin::Pgsql;
+
+my $pg = Munin::Plugin::Pgsql->new(
+    title  => 'Connected Users By Category',
+    info   => 'Number of connected users',
+    vlabel => 'Connections',
+    category => 'Darwin2',
+    defaultdb => 'darwin2',
+    graphdraw => 'AREASTACK',
+    basequery =>
+      "SELECT count(CASE WHEN db_user_type = 1 THEN 1 ELSE null END) as nbr_register,
+          count(CASE WHEN db_user_type = 2 THEN 1 ELSE null END) as nbr_encoder,
+          count(CASE WHEN db_user_type = 4 THEN 1 ELSE null END) as nbr_manager
+       FROM darwin2.users WHERE last_seen >= now()-'15 minutes'::interval",
+   configquery => "VALUES
+
+           ('nbr_register','Number Of connected registered in last 15 min', 'Number Of registered users connected in the db'),
+           ('nbr_encoder','Number Of connected encoder in last 15 min', 'Number Of encoder users connected in the db'),
+           ('nbr_manager','Number Of connected collection manager in last 15 min', 'Number Of collection manager users connected in the db')
+    ",
+    pivotquery  => 1,
+);
+
+$pg->Process();
+
