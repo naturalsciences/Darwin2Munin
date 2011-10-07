@@ -1,0 +1,17 @@
+24c24
+< # $Id: Pgsql.pm 3231 2009-12-16 14:45:55Z mha $
+---
+> # $Id$
+188,189c188
+<         graphtype => 'GAUGE',
+< 	category  => 'PostgreSQL'
+---
+>         graphtype => 'GAUGE'
+212d210
+< 	category       => $args{category}
+230c228
+<     print "graph_category $self->{category}\n";
+---
+>     print "graph_category PostgreSQL\n";
+373d370
+< 	$dbname = $ENV{"PGDATABASE"}           if ($ENV{"PGDATABASE"});

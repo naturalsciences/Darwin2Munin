@@ -18,10 +18,11 @@ Link these files in your munin-node "plugins/" directory
 of the DB server and add this configuration to your
 munin-node config file.
 
+<pre>
 [darwin_*]
   user postgres
   env.PGDATABASE darwin2
-
+</pre>
 
 You also need to "patch" a file from your std munin installation
 to allow darwin plugins.
