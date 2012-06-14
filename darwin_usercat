@@ -72,7 +72,8 @@ my $pg = Munin::Plugin::Pgsql->new(
       "SELECT count(CASE WHEN db_user_type = 1 THEN 1 ELSE null END) as nbr_register,
           count(CASE WHEN db_user_type = 2 THEN 1 ELSE null END) as nbr_encoder,
           count(CASE WHEN db_user_type = 4 THEN 1 ELSE null END) as nbr_manager
-       FROM darwin2.users WHERE last_seen >= now()-'15 minutes'::interval",
+          FROM darwin2.users u INNER JOIN darwin2.users_login_infos l ON u.id = l.user_ref
+           WHERE last_seen >= now()-'15 minutes'::interval",
    configquery => "VALUES
 
            ('nbr_register','Number Of connected registered in last 15 min', 'Number Of registered users connected in the db'),

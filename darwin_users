@@ -68,7 +68,7 @@ my $pg = Munin::Plugin::Pgsql->new(
     category => 'Darwin2',
     defaultdb => 'darwin2',
     basequery =>
-      "SELECT count(*) nbr_user FROM darwin2.users WHERE last_seen >= now()-'30 minutes'::interval",
+      "SELECT count(*) nbr_user FROM darwin2.users_login_infos WHERE last_seen >= now()-'30 minutes'::interval",
    configquery => "VALUES
            ('nbr_user','Number Of connected users', 'Number Of connected users in last 30 minutes')",
     pivotquery  => 1,

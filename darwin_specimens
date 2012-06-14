@@ -69,10 +69,10 @@ my $pg = Munin::Plugin::Pgsql->new(
 #    graphdraw => 'AREA',
     defaultdb => 'darwin2',
     basequery =>
-      "select
+      "set search_path=darwin2,public; select
          (select count(*) from darwin2.specimens ) as spec,
          (select count(*) from darwin2.specimen_individuals ) as ind,
-         (select count(*) from darwin2.specimen_parts) as parts",
+         (select count(id) from darwin2.specimen_parts) as parts",
    configquery => "VALUES
            ('spec','Number Of specimens', 'Number Of specimens in the db'),
            ('ind','Number Of individuals', 'Number Of individuals in the db'),
