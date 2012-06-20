@@ -24,14 +24,11 @@ munin-node config file.
   env.PGDATABASE darwin2
 </pre>
 
-You also need to "patch" a file from your std munin installation
-to allow darwin plugins.
+=== Patch (munin < v2) ===
 
-See the ticket on the munin trac:
+If you use a version of munin older than V2.0, want to add a patch described here :
 
 http://munin-monitoring.org/ticket/1103
-
-=== Patch ===
 
 In the Pgsql.pm file, ( /usr/share/perl5/Munin/Plugin/Pgsql.pm on debian stable)
 
